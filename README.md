@@ -1,5 +1,3 @@
-<p align="center"><img src="https://raw.github.com/wiki/MotomuMatsui/gs/images/GSbanner.png"></p>  
-
 # nj
 
 Reference: Matsui and Iwasaki, ???, 2018  
@@ -24,3 +22,15 @@ version 1.0 (2018/10/12)
     $ cd nj
     $ make
 ````
+
+## Usage
+To get on-line help:
+```
+    $ ./nj -h
+```
+
+The following command enables you to calculate NJ tree (phylogenetic tree reconstructed by Neighbor Joining method):
+```
+    $ ./nj [arguments] input > output
+```
+
