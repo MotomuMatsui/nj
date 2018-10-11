@@ -1,10 +1,18 @@
 # nj
+`nj` is a software to conduct the naiive Neighbor Joining (NJ) method (Saito and Nei, MBE, 1987) with Edge Perturbation (EP) method (Matsui and Iwasaki, xxx, xxxx).    
+`nj` is open-source software (GPL v3.0) inplemented in C++ for <strong>Linux</strong>, <strong>Mac (macOS)</strong> and <strong>Windows (Cygwin)</strong>.    
 
 Reference: Matsui and Iwasaki, ???, 2018  
 Online tool: [GS analysis server](http://gs.bs.s.u-tokyo.ac.jp/)  
 Our Laboratory: [Iwasaki Lab](http://iwasakilab.bs.s.u-tokyo.ac.jp/eindex.html)  
 
 [![Build Status](https://travis-ci.org/MotomuMatsui/nj.svg?branch=master)](https://travis-ci.org/MotomuMatsui/nj)
+[![Ubuntu](https://img.shields.io/badge/Linux-Ubuntu-green.svg)](https://www.ubuntu.com/)
+[![CentOS](https://img.shields.io/badge/Linux-CentOS-green.svg)](https://www.centos.org/)
+[![Mac](https://img.shields.io/badge/Mac-macOS-green.svg)](https://www.apple.com/macos/)
+[![Windows](https://img.shields.io/badge/Windows-Cygwin-green.svg)](https://www.cygwin.com/)
+[![Language](https://img.shields.io/badge/C%2B%2B-5.0%2B-green.svg)](https://gcc.gnu.org/)
+[![GPL License](https://img.shields.io/badge/license-GPL-blue.svg)](LICENSE)
 
 ## History
 version 1.0 (2018/10/12)   
@@ -53,5 +61,5 @@ Copyright &copy; 2018, Motomu Matsui
 [Motomu Matsui](https://sites.google.com/site/motomumatsui/)
 
 ## Reference
-Naruya Saitou and Masatoshi Nei, The neighbor-joining method: a new method for reconstructing phylogenetic trees, Mol. Biol. Evol., 1987
+Naruya Saitou and Masatoshi Nei, The neighbor-joining method: a new method for reconstructing phylogenetic trees, Mol. Biol. Evol., 1987    
 Motomu Matsui and Wataru Iwasaki, ???, 2018
