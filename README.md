@@ -34,3 +34,24 @@ The following command enables you to calculate NJ tree (phylogenetic tree recons
     $ ./nj [arguments] input > output
 ```
 
+Arguments:
+
+|Option| Description                                                                                         |
+|:----:|:----------------------------------------------------------------------------------------------------|
+|  -e  |<strong>[integer(>=0)]</strong> <em>The number of replicates for EP method. Default: 0</em>          |
+|  -r  |<strong>[integer(>=1)]</strong> <em>The random seed number for EP method. Default: random number</em>|
+|  -s  |<em>Silent mode: do not report progress. Default: Off</em>                                           |
+|  -h  |<em>Show help messages. Default: Off</em>                                                            |
+|  -v  |<em>Show the version. Default: Off</em>                                                              |
+
+
+## License
+This software is distributed under the GNU GPL, see [LICENSE](LICENSE)   
+Copyright &copy; 2018, Motomu Matsui
+
+## Author
+[Motomu Matsui](https://sites.google.com/site/motomumatsui/)
+
+## Reference
+Naruya Saitou and Masatoshi Nei, The neighbor-joining method: a new method for reconstructing phylogenetic trees, Mol. Biol. Evol., 1987
+Motomu Matsui and Wataru Iwasaki, ???, 2018

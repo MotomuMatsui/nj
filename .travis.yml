@@ -24,4 +24,4 @@ install:
   - make CXX="${CXX}"
 
 script:
-  - ./nj -e 100 -t 1 -r 12345 example/matrix.txt
+  - ./nj -e 100 example/matrix.txt
