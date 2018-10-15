@@ -34,10 +34,9 @@ int NJ(double* const (&oW), int* (&nj), int const& size){
     return -1;
   }
   else if(size == 2){
-    for(int i=0; i<3; i++){
-      nj[i] = 1;
-    }
-    nj[3] = 2;
+    nj = new int[4](); // Result (e.g. n=2)
+    nj[0] = 1; nj[1] = 1;
+    nj[2] = 1; nj[3] = 2;
 
     delete[] W;
     delete[] r;
