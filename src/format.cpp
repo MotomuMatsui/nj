@@ -27,6 +27,7 @@ void readMAT(ifstream& ifs, double* (&W), int& size){
 
   //Reading lines
   string line, chr;
+  int n = 0; // position
   while(getline(ifs, line)){
     
     if(x == 0){
@@ -39,12 +40,12 @@ void readMAT(ifstream& ifs, double* (&W), int& size){
 
     //Split lines
     istringstream stream(line);
-    int y = 0; // y
     while(getline(stream, chr, '\t')){
-      W[x*size+y] = stod(chr);
-      y ++;
+      W[n] = stod(chr);
+      n++;
     }
-    x ++;
+
+    x = 1;
   }  
 }
 
