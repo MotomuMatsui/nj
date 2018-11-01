@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <functional>
 #include <algorithm>
+#include <cmath>
 
 using namespace std;
 
@@ -29,17 +30,14 @@ int EP(double* const (&oW), unordered_map<string, double>& ep, function<double()
   int N = size*size;
   double* W = new double[N]();
   for(int n = 0; n < N; n++){
-    double a = oW[n];
-    if(a==0){
-      W[n] = 0; // Graph topology is not changed
-    }
-    else{
-      auto b = gev(R(), a);
-      W[n] = 
-        (b>1)? 1: // b: Similarity scores perturved according to Generalized Extreme Value distribution
-        (b<0)? 0: // E[n]: Perturved sequence similarity score
-	b; // 0 <= E[n] <= 1
-    }
+    auto a = oW[n];       // distance
+    auto b = exp(-a);     // distance -> similarity    
+    auto c = gev(R(), b); // Edge perturbation
+    auto d = -1*log(c);   // similarity -> distance
+    
+    W[n] = (d<0)? 0: d;
+    // d: Similarity scores perturved according to Generalized Extreme Value distribution
+    // W[n]: Perturved distance matrix (0 <= W[n])
   }
   
   auto r    = new double[size]();      // r_i = (1/(n-2))*SIGMA_{k}(d_ik)
