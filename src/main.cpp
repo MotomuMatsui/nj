@@ -27,7 +27,7 @@ extern void print_banner();
 extern void print_usage(char*&);
 
 // format.cpp
-extern void readMAT(ifstream&, double*&, int&);
+extern int  readMAT(ifstream&, double*&, int&);
 extern void sc2nwk(int* const&, string&, int const&);
 extern void addEP(string const&, string&, unordered_map<string, double>&, int const&, int const&);
 extern void addLABEL(string const&, string&, string const&, int const&);
@@ -133,10 +133,13 @@ int main(int argc, char* argv[]){
   }
 
   /*/Parsing matrix file/*/
-  readMAT(ifs1, W, size); 
+  auto same_sequence = readMAT(ifs1, W, size); 
          // ifs1: INPUT (original matrix file)
          // W:    OUTPUT (matrix)
          // size: # of sequence = row size of sequence similarity matrix
+
+  
+  /*PRINT*/ if(!silence) if(same_sequence>0) cerr << "  <WARNING> This dataset has " << same_sequence << " duplicated sequence pair(s)" << endl << endl;
 
   /*/Parameters/*/
   if(!silence){
