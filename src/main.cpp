@@ -137,10 +137,7 @@ int main(int argc, char* argv[]){
          // ifs1: INPUT (original matrix file)
          // W:    OUTPUT (matrix)
          // size: # of sequence = row size of sequence similarity matrix
-
   
-  /*PRINT*/ if(!silence) if(same_sequence>0) cerr << "  <WARNING> This dataset has " << same_sequence << " duplicated sequence pair(s)" << endl << endl;
-
   /*/Parameters/*/
   if(!silence){
     /*PRINT*/ print_banner();
@@ -148,6 +145,8 @@ int main(int argc, char* argv[]){
     /*PRINT*/ cerr << "-Input" << endl;
     /*PRINT*/ cerr << "  file = " << input << endl;
     /*PRINT*/ cerr << "  # of sequences = " << size << endl << endl;
+    
+    /*PRINT*/ if(!silence) if(same_sequence>0) cerr << "  <WARNING> This dataset has " << same_sequence << " duplicated sequence pair(s)" << endl << endl;
 
     /*PRINT*/ cerr << "-EP method" << endl;
     if(seed>0){
