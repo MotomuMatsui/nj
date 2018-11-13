@@ -146,7 +146,7 @@ int main(int argc, char* argv[]){
     /*PRINT*/ cerr << "  file = " << input << endl;
     /*PRINT*/ cerr << "  # of sequences = " << size << endl << endl;
     
-    /*PRINT*/ if(!silence) if(same_sequence>0) cerr << "  <WARNING> This dataset has " << same_sequence << " duplicated sequence pair(s)" << endl << endl;
+    /*PRINT*/ if(same_sequence>0) cerr << "  <WARNING> This dataset has " << same_sequence << " duplicated sequence pair(s)" << endl << endl;
 
     /*PRINT*/ cerr << "-EP method" << endl;
     if(seed>0){
