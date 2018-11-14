@@ -31,24 +31,27 @@ extern int  readMAT(ifstream&, double*&, int&);
 extern void sc2nwk(int* const&, string&, int const&);
 extern void addEP(string const&, string&, unordered_map<string, double>&, int const&, int const&);
 extern void addLABEL(string const&, string&, string const&, int const&);
+extern void sc2list(int* const&, int*&, int const&);
 
 // nj.cpp (Core functions of NJ method)
 extern int NJ(double* const&, int*&, int const&);
 
 // ep.cpp
-extern void EP(double* const&, unordered_map<string, double>&, function<double()>&, int const&);
+extern int EP(double* const&, unordered_map<string, double>&, function<double()>&, int const&);
+extern int EP2(double* const&, int* const&, unordered_map<string, double>&, function<double()>&, int const&);
 
 int main(int argc, char* argv[]){
 
   /*/Getopt/*/
-  int silence = 0;            // -s
-  int ep_num  = 0;            // -e
-  int seed    = 0;            // -r
+  int    silence   = 0;         // -s
+  int    ep_num    = 0;         // -e
+  int    seed      = 0;         // -r
+  string bs_method = "";        // -b [fbp (Felsenstein's bootstrap proportion) or tbe (transfer bootstrap expectation)]
 
   opterr = 0; // default error messages -> OFF
   int opt;
   regex renum(R"(^[\d\.]+$)"); // -e/-r option requires an integer/flout number
-  while ((opt = getopt(argc, argv, "shve:r:")) != -1){
+  while ((opt = getopt(argc, argv, "shve:r:b:")) != -1){
     if(opt == 'e'){ // OK! (./gs -e 100 IN.fst)
       if(regex_match(optarg, renum)){
         ep_num = atoi(optarg);
@@ -82,6 +85,15 @@ int main(int argc, char* argv[]){
     }
     else if(opt == 's'){ // SILENT mode (./gs -s -e 100 IN.fst)
       silence = 1;
+    }
+    else if(opt == 'b'){ // Statistical method to assess the robustness of inffered branches (./gs -e 100 -b tbe IN.fst)
+      bs_method = optarg;
+      if(bs_method != "fbs" && bs_method != "tbe"){
+        /*PRINT*/ print_banner();
+        /*PRINT*/ cerr << "Option -b requires a string that equals 'fbs' or 'tbe'.\n" << endl;
+        /*PRINT*/ print_usage(argv[0]);
+        return -1;
+      }
     }
     else if (opt == '?'){
       if(optopt == 'e'){ // NG! (./gs IN.fst -e)
@@ -175,42 +187,83 @@ int main(int argc, char* argv[]){
 
   /*/EP method/*/
   if(ep_num>0){
-    unordered_map<string, double> ep;
-    string newick_EP; // GS+EP tree
-
-    // Random number generator (Uniform distribution->Mersenne Twister)
-    function<double()> R;
-    uniform_real_distribution<double> urd(0,1);    // uniform distributed random number
-
-    if(seed>0){
-      mt19937 mt(static_cast<unsigned int>(seed)); // mersenne twister
-      R = bind(urd, ref(mt));                      // random number generator    
-    }
-    else{
-      random_device rd;                            // random seed
-      mt19937 mt(rd());                            // mersenne twister
-      R = bind(urd, ref(mt));                      // random number generator        
-    }    
 
     /*PRINT*/ if(!silence) cerr << "-EP method" << endl;
 
-    for(int n=1; n<=ep_num; n++){
-      /*PRINT*/ if(!silence) cerr << "  " << n << "/" << ep_num << " iterations" << "\r"<< flush;
-      EP(W, ep, R, size);
-      // W: INPUT (sequence similarity matrix)
-      // ep: OUTPUT (result of Edge Perturbation method)
-      // R: random number generator
+    string newick_EP; // GS+EP tree
+    unordered_map<string, double> ep;
+
+    if(bs_method == "fbs"){
+      
+      /*PRINT*/ if(!silence) cerr << "  Method = Felsenstein's bootstrap proportion" << endl;      
+      
+      // Random number generator (Uniform distribution->Mersenne Twister)
+      function<double()> R;
+      uniform_real_distribution<double> urd(0,1);    // uniform distributed random number
+      
+      if(seed>0){
+	mt19937 mt(static_cast<unsigned int>(seed)); // mersenne twister
+	R = bind(urd, ref(mt));                      // random number generator    
+      }
+      else{
+	random_device rd;                            // random seed
+	mt19937 mt(rd());                            // mersenne twister
+	R = bind(urd, ref(mt));                      // random number generator        
+      }    
+
+      for(int n=1; n<=ep_num; n++){
+	/*PRINT*/ if(!silence) cerr << "  " << n << "/" << ep_num << " iterations" << "\r"<< flush;
+	EP(W, ep, R, size);
+          // W: INPUT (sequence similarity matrix)
+          // ep: OUTPUT (result of Edge Perturbation method)
+          // R: random number generator
+      }      
     }
-    
+    else{
+
+      /*PRINT*/ if(!silence) cerr << "  Method = Transfer bootstrap expectation" << endl;            
+
+      int* list; 
+      sc2list(nj, list, size);
+        // nj: INPUT (result of stepwise spectral clustering)
+        // list: OUTPUT (NJ tree [leaves])      
+      
+      // Random number generator (Uniform distribution->Mersenne Twister)
+      function<double()> R;
+      uniform_real_distribution<double> urd(0,1);    // uniform distributed random number
+      
+      if(seed>0){
+	mt19937 mt(static_cast<unsigned int>(seed)); // mersenne twister
+	R = bind(urd, ref(mt));                      // random number generator    
+      }
+      else{
+	random_device rd;                            // random seed
+	mt19937 mt(rd());                            // mersenne twister
+	R = bind(urd, ref(mt));                      // random number generator        
+      }    
+
+      for(int n=1; n<=ep_num; n++){
+	/*PRINT*/ if(!silence) cerr << "  " << n << "/" << ep_num << " iterations" << "\r"<< flush;
+
+	EP2(W, list, ep, R, size);
+        // W: INPUT (sequence similarity matrix)
+        // ep: OUTPUT (result of Edge Perturbation method)
+        // R: random number generator
+
+      }
+
+      delete[] list;
+    }
+
     /*PRINT*/ if(!silence) cerr << "\n  done." << endl << endl;
     /*PRINT*/ if(!silence) cerr << "------------------------------------------\n" << endl;
-
+    
     addEP(newick, newick_EP, ep, ep_num, size);
     // newick: INPUT (GS tree [newick format])
     // newick_EP: OUTPUT (GS+EP tree [newick format])
     // ep: INPUT (result of Edge Perturbation method)
     // ep_num: INPUT (# of Edge Perturbation method)
-
+    
     /*/ GS tree WITH EP values ->STDOUT /*/
     cout << newick_EP << endl;
   }
