@@ -16,7 +16,8 @@ Our Laboratory: [Iwasaki Lab](http://iwasakilab.bs.s.u-tokyo.ac.jp/eindex.html)
 
 ## History
 version 2.0 (2018/11/16)   
-  - Add TBE algorithm (F. Lemoine, et al., Nature, 2018)    
+  - Add Transfer Bootstrap Expectation algorithm (F. Lemoine, et al., Nature, 2018)    
+
 version 1.0 (2018/10/12)   
   - Implemented in C++    
 
