@@ -1,5 +1,5 @@
 /********************************************\
-| Edge Perturbation Method v1.0 (2018/11/16) |
+| Edge Perturbation Method v2.0 (2018/11/16) |
 |                                            |
 |  Copyright (c) 2015-2018 Motomu Matsui     |
 |      Distributed under the GNU GPL         |
