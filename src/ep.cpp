@@ -1,5 +1,5 @@
 /********************************************\
-| Edge Perturbation Method v1.0 (2018/10/12) |
+| Edge Perturbation Method v1.0 (2018/11/16) |
 |                                            |
 |  Copyright (c) 2015-2018 Motomu Matsui     |
 |      Distributed under the GNU GPL         |
@@ -30,8 +30,8 @@ extern void sc2list(int* const&, int*&, int const&);
 int EP(double* const (&oW), unordered_map<string, double>& ep, function<double()>& R, int const& size){
 
   // Edge perturbation
-  int N = size*size;
-  double* W = new double[N]();
+  auto N = size*size;
+  auto W = new double[N]();
   for(int n = 0; n < N; n++){
     auto a = oW[n];       // distance
     auto b = exp(-a);     // distance -> similarity    
@@ -42,20 +42,14 @@ int EP(double* const (&oW), unordered_map<string, double>& ep, function<double()
     // d: Similarity scores perturved according to Generalized Extreme Value distribution
     // W[n]: Perturved distance matrix (0 <= W[n])
   }
-  
-  auto r    = new double[size]();      // r_i = (1/(n-2))*SIGMA_{k}(d_ik)
-  auto step = new int[size*size]();    // Result (e.g. n=3)
-  for(int i=0; i<size; i++){           // | 0, 1, 2 |    _|-1
-    step[i*size] = 0;                  // | 0, 1, 1 |  _| --2
-  }                                    // | 0, 0, 0 |   L___3
 
   // Recursive Neighbor Joining (N-2 times)
+  auto r    = new double[size](); // r_i = (1/(n-2))*SIGMA_{k}(d_ik)
+  auto step = new int[N]();       // Result (e.g. n=3)
   for(int n = size; n>2; n--){
 
-    int m  = size-n;
-    int im = 0;
-    int jm = 0;
-    double t  = 0.0;
+    auto m   = size-n;
+    double t = 0.0;
 
     // r_i = (1/(n-2))*SIGMA_{k}(d_ik)
     for(int i=0; i<size; i++){
@@ -70,13 +64,15 @@ int EP(double* const (&oW), unordered_map<string, double>& ep, function<double()
     }    
 
     // Search minimum D_ij = d_ij-r_i-r_j    
-    double Dm = 2.0*t;
-    double D  = 0.0;
+    auto Dm = 2.0*t;
+    int im  = 0;
+    int jm  = 0;
+
     for(int i=0; i<size-1; i++){
       for(int j=i+1; j<size; j++){
 	if(W[i*size+j]>=0){
 
-	  D = W[i*size+j]-r[i]-r[j];
+	  auto D = W[i*size+j]-r[i]-r[j];
 	  
 	  if(D<Dm){
 	    Dm = D;
@@ -142,51 +138,50 @@ int EP(double* const (&oW), unordered_map<string, double>& ep, function<double()
   }
 
   // Transform
-  stringstream ss;
-  
+  int* nj = new int[size*size](); // Result (e.g. n=3)                                                                                 
+  for(int i=0; i<size; i++){ // | 1, 1, 1 |    _|-1                                                                                    
+    nj[i*size] = 1;          // | 1, 1, 3 |  _| --2                                                                                    
+  }                          // | 1, 2, 2 |   L___3                                                                                    
+
   for(int i=1; i<size; i++){
     int m = size-i;
     int flag = -1;
-
-    vector<int> a;
-    vector<int> b;
-
     for(int j=0; j<size; j++){
+
+      // Copy                                                                                                                          
+      nj[j*size+i] = nj[j*size+i-1];
+
       if(step[(j+1)*size-i] == m){
-	if(flag == -1){ // cluster (1st time)
-	  flag = step[(j+1)*size-i-1];
-	  a.push_back(j);
-	}
-	else if(flag == 0){
-	  b.push_back(j);
-	}
-	else if(flag == step[(j+1)*size-i-1]){ // cluster
-	  a.push_back(j);
-	}
-	else{
-	  b.push_back(j);	  
-	}
+        if(flag == -1){ // cluster (1st time)                                                                                          
+          flag = step[(j+1)*size-i-1];
+          nj[j*size+i] = i+1;
+        }
+        else if(flag == 0){}
+        else if(flag == step[(j+1)*size-i-1]){ // cluster                                                                              
+          nj[j*size+i] = i+1;
+        }
       }
     }
-    
+  }
+
+  int* list_ep;
+  sc2list(nj, list_ep, size);
+
+  stringstream ss;
+  for(int x=0; x<2*(size-3); x++){
     ss.str("");
-    sort(a.begin(), a.end());
-    for(int n : a){
-      ss << n+1 << "|";
+    for(int z=0; z<size; z++){
+      if(list_ep[x*size+z]>0){
+        ss << z+1 << "|";
+      }
     }
-    ep[ss.str()]++;
-    
-    ss.str("");
-    sort(b.begin(), b.end());
-    for(int n : b){
-      ss << n+1 << "|";
-    }
-    ep[ss.str()]++;
+    ep[ss.str()] ++;
   }
   
   delete[] W;
   delete[] r;
   delete[] step;
+  delete[] list_ep;
   return 1;
 }
 

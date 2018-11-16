@@ -16,21 +16,9 @@
 using namespace std;
 
 int NJ(double* const (&oW), int* (&nj), int const& size){
-  
-  auto W    = new double[size*size](); // Distance matrix
-  auto r    = new double[size]();      // r_i = (1/(n-2))*SIGMA_{k}(d_ik)
-  auto L    = new double[size*2-3]();  // branch lengths of the NJ tree
-  auto step = new int[size*size]();    // Result (e.g. n=3)
-  for(int i=0; i<size; i++){           // | 0, 1, 2 |    _|-1
-    step[i*size] = 0;                  // | 0, 1, 1 |  _| --2
-  }                                    // | 0, 0, 0 |   L___3
-  
+    
   // Copy (oW -> W) & Check
   if(size < 2){
-    delete[] W;
-    delete[] r;
-    delete[] L;
-    delete[] step;
     return -1;
   }
   else if(size == 2){
@@ -38,21 +26,15 @@ int NJ(double* const (&oW), int* (&nj), int const& size){
     nj[0] = 1; nj[1] = 1;
     nj[2] = 1; nj[3] = 2;
 
-    delete[] W;
-    delete[] r;
-    delete[] L;
-    delete[] step;
     return 1;
   }
 
+  auto W = new double[size*size](); // Distance matrix
   for(int i=0; i<size-1; i++){
     for(int j=i+1; j<size; j++){
       auto v = oW[i*size+j];
       if(v < 0){
 	delete[] W;
-	delete[] r;
-	delete[] L;
-	delete[] step;
 	return -1;
       }
       W[i*size+j] = v;
@@ -62,11 +44,12 @@ int NJ(double* const (&oW), int* (&nj), int const& size){
   }
   
   // Recursive Neighbor Joining (N-2 times)
+  auto r    = new double[size]();     // r_i = (1/(n-2))*SIGMA_{k}(d_ik)
+  auto L    = new double[size*2-3](); // branch lengths of the NJ tree
+  auto step = new int[size*size]();   // Result (e.g. n=3)
   for(int n = size; n>2; n--){
 
     int m  = size-n;
-    int im = 0;
-    int jm = 0;
     double t  = 0.0;
 
     // r_i = (1/(n-2))*SIGMA_{k}(d_ik)
@@ -82,13 +65,14 @@ int NJ(double* const (&oW), int* (&nj), int const& size){
     }    
 
     // Search minimum D_ij = d_ij-r_i-r_j    
-    double Dm = 2.0*t;
-    double D  = 0.0;
+    auto Dm = 2.0*t;
+    int im  = 0;
+    int jm  = 0;
     for(int i=0; i<size-1; i++){
       for(int j=i+1; j<size; j++){
 	if(W[i*size+j]>=0){
 
-	  D = W[i*size+j]-r[i]-r[j];
+	  auto D = W[i*size+j]-r[i]-r[j];
 	  
 	  if(D<Dm){
 	    Dm = D;

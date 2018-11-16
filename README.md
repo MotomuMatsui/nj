@@ -15,6 +15,8 @@ Our Laboratory: [Iwasaki Lab](http://iwasakilab.bs.s.u-tokyo.ac.jp/eindex.html)
 [![GPL License](https://img.shields.io/badge/license-GPL-blue.svg)](LICENSE)
 
 ## History
+version 2.0 (2018/11/16)   
+  - Add TBE algorithm (F. Lemoine, et al., Nature, 2018)    
 version 1.0 (2018/10/12)   
   - Implemented in C++    
 
@@ -62,4 +64,5 @@ Copyright &copy; 2018, Motomu Matsui
 
 ## Reference
 Naruya Saitou and Masatoshi Nei, The neighbor-joining method: a new method for reconstructing phylogenetic trees, Mol. Biol. Evol., 1987    
+F Lemoine, JB Domelevo Entfellner, E Wilkinson, D Correia, M Davila Felipe, T De Oliveira, and O Gascuel, Renewing Felsensteins phylogenetic bootstrap in the era of big data, Nature, 2018   
 Motomu Matsui and Wataru Iwasaki, ???, 2018
