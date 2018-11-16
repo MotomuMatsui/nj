@@ -331,13 +331,19 @@ int EP2(double* const (&oW), int* const (&list), unordered_map<string, double>& 
   sc2list(nj, list_ep, size);
 
   for(int x=0; x<2*(size-3); x++){
-    int min_share = size;
+    double min_share = size;
     for(int y=0; y<2*(size-3); y++){
-      int share = 0;
+      double share = 0;
+      int num_a = 0;
+      int num_b = 0;
       for(int z=0; z<size; z++){
 	share += list[x*size+z]^list_ep[y*size+z];
+        num_a += list[x*size+z];
+        num_b += list_ep[y*size+z];
       }
-      min_share = (share < min_share)? share: min_share;
+      if(num_a == num_b){
+        min_share = (share < min_share)? share: min_share;
+      }
     }
     
     stringstream ss;
@@ -348,7 +354,9 @@ int EP2(double* const (&oW), int* const (&list), unordered_map<string, double>& 
 	num ++;
       }
     }
-    ep[ss.str()] += 1-min_share/((num-1)||1);
+    if(num > 1 && min_share<num-1){
+      ep[ss.str()] += 1 - min_share / (num - 1);
+    }
   }
   
   delete[] W;
