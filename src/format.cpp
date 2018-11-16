@@ -173,7 +173,7 @@ void addEP(string const& newick, string& newick_EP, unordered_map<string, double
       string const C = ss.str();
 
       if(B>2){
-        ss_EP << ep[C]/ep_num;
+        ss_EP << fixed << setprecision(2) << ep[C]/ep_num;
       }
       else if(B==2 && f==1){
         int count  = 0;
@@ -184,7 +184,7 @@ void addEP(string const& newick, string& newick_EP, unordered_map<string, double
         }
 
         if(count < size-1){
-          ss_EP << ep[C]/ep_num;
+          ss_EP << fixed << setprecision(2) << ep[C]/ep_num;
         }
 
         f=0;
