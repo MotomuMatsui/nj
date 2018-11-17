@@ -139,25 +139,25 @@ int EP(double* const (&oW), unordered_map<string, double>& ep, function<double()
 
   // Transform
   int* nj = new int[size*size](); // Result (e.g. n=3)                                                                                 
-  for(int i=0; i<size; i++){ // | 1, 1, 1 |    _|-1                                                                                    
-    nj[i*size] = 1;          // | 1, 1, 3 |  _| --2                                                                                    
-  }                          // | 1, 2, 2 |   L___3                                                                                    
+  for(int i=0; i<size; i++){ // | 1, 1, 1 |    _|-1
+    nj[i*size] = 1;          // | 1, 1, 3 |  _| --2
+  }                          // | 1, 2, 2 |   L___3
 
   for(int i=1; i<size; i++){
     int m = size-i;
     int flag = -1;
     for(int j=0; j<size; j++){
 
-      // Copy                                                                                                                          
+      // Copy
       nj[j*size+i] = nj[j*size+i-1];
 
       if(step[(j+1)*size-i] == m){
-        if(flag == -1){ // cluster (1st time)                                                                                          
+        if(flag == -1){ // cluster (1st time)
           flag = step[(j+1)*size-i-1];
           nj[j*size+i] = i+1;
         }
         else if(flag == 0){}
-        else if(flag == step[(j+1)*size-i-1]){ // cluster                                                                              
+        else if(flag == step[(j+1)*size-i-1]){ // cluster
           nj[j*size+i] = i+1;
         }
       }
@@ -190,7 +190,6 @@ int EP2(double* const (&oW), int* const (&list), unordered_map<string, double>& 
   // Edge perturbation
   auto N = size*size;
   auto W = new double[N]();
-
   for(int n = 0; n < N; n++){
     auto a = oW[n];       // distance
     auto b = exp(-a);     // distance -> similarity    
@@ -202,19 +201,13 @@ int EP2(double* const (&oW), int* const (&list), unordered_map<string, double>& 
       // W[n]: Perturved distance matrix (0 <= W[n])
   }
     
-  auto r    = new double[size]();      // r_i = (1/(n-2))*SIGMA_{k}(d_ik)
-  auto step = new int[size*size]();    // Result (e.g. n=3)
-  for(int i=0; i<size; i++){           // | 0, 1, 2 |    _|-1
-    step[i*size] = 0;                  // | 0, 1, 1 |  _| --2
-  }                                    // | 0, 0, 0 |   L___3
-
   // Recursive Neighbor Joining (N-2 times)
+  auto r    = new double[size]();   // r_i = (1/(n-2))*SIGMA_{k}(d_ik)
+  auto step = new int[size*size](); // Result (e.g. n=3)
   for(int n = size; n>2; n--){
 
-    int m  = size-n;
-    int im = 0;
-    int jm = 0;
-    double t  = 0.0;
+    int m    = size-n;
+    double t = 0.0;
 
     // r_i = (1/(n-2))*SIGMA_{k}(d_ik)
     for(int i=0; i<size; i++){
@@ -229,13 +222,15 @@ int EP2(double* const (&oW), int* const (&list), unordered_map<string, double>& 
     }    
 
     // Search minimum D_ij = d_ij-r_i-r_j    
-    double Dm = 2.0*t;
-    double D  = 0.0;
+    auto Dm = 2.0*t;
+    int im  = 0;
+    int jm  = 0;
+
     for(int i=0; i<size-1; i++){
       for(int j=i+1; j<size; j++){
 	if(W[i*size+j]>=0){
 
-	  D = W[i*size+j]-r[i]-r[j];
+	  auto D = W[i*size+j]-r[i]-r[j];
 	  
 	  if(D<Dm){
 	    Dm = D;
@@ -330,32 +325,57 @@ int EP2(double* const (&oW), int* const (&list), unordered_map<string, double>& 
   int* list_ep;
   sc2list(nj, list_ep, size);
 
-  for(int x=0; x<2*(size-3); x++){
+  for(int x=0; x<size-3; x++){
     double min_share = size;
+
+    // calculate subset sizes
+    double num_a1 = 0;
+    double num_a2 = 0;
+    for(int z=0; z<size; z++){
+      num_a1 += list[2*x*size+z];
+      num_a2 += list[(2*x+1)*size+z];      
+    }
+
+    auto num_a = (num_a1 <= num_a2)? num_a1: num_a2;
+
     for(int y=0; y<2*(size-3); y++){
-      double share = 0;
-      int num_a = 0;
-      int num_b = 0;
+
+      double num_b = 0;
       for(int z=0; z<size; z++){
-	share += list[x*size+z]^list_ep[y*size+z];
-        num_a += list[x*size+z];
         num_b += list_ep[y*size+z];
       }
-      if(num_a == num_b){
+
+      if(num_a1 == num_b){
+	double share = 0;
+	for(int z=0; z<size; z++){
+	  share += list[2*x*size+z]^list_ep[y*size+z];
+	}
+        min_share = (share < min_share)? share: min_share;
+      }
+      if(num_a2 == num_b){
+	double share = 0;
+	for(int z=0; z<size; z++){
+	  share += list[(2*x+1)*size+z]^list_ep[y*size+z];
+	}
         min_share = (share < min_share)? share: min_share;
       }
     }
+
+    min_share /= 2;
     
-    stringstream ss;
-    int num = 0;
+    stringstream ss1;
+    stringstream ss2;
     for(int z=0; z<size; z++){
-      if(list[x*size+z]>0){
-	ss << z+1 << "|";	
-	num ++;
+      if(list[2*x*size+z]>0){
+	ss1 << z+1 << "|";	
+      }
+      else{
+	ss2 << z+1 << "|";	
       }
     }
-    if(num > 1 && min_share<num-1){
-      ep[ss.str()] += 1 - min_share / (num - 1);
+    if(min_share < num_a - 1){
+      ep[ss1.str()] += 1 - min_share / (num_a - 1);
+      ep[ss2.str()] += 1 - min_share / (num_a - 1);
     }
   }
   
