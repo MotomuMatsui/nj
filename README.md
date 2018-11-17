@@ -65,5 +65,5 @@ Copyright &copy; 2018, Motomu Matsui
 
 ## Reference
 Naruya Saitou and Masatoshi Nei, The neighbor-joining method: a new method for reconstructing phylogenetic trees, Mol. Biol. Evol., 1987    
-F Lemoine, JB Domelevo Entfellner, E Wilkinson, D Correia, M Davila Felipe, T De Oliveira, and O Gascuel, Renewing Felsensteins phylogenetic bootstrap in the era of big data, Nature, 2018   
+Frederic Lemoine, Jean-Baka Domelevo Entfellner, Eduan Wilkinson, Damien Correia, Miraine Davila Felipe, Tulio De Oliveira, and Olivier Gascuel, Renewing Felsensteins phylogenetic bootstrap in the era of big data, Nature, 2018   
 Motomu Matsui and Wataru Iwasaki, ???, 2018

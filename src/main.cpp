@@ -162,10 +162,10 @@ int main(int argc, char* argv[]){
 
     /*PRINT*/ cerr << "-EP method" << endl;
     if(seed>0){
-      /*PRINT*/ cerr << "  Random seed = " << seed << endl;
+      /*PRINT*/ cerr << "  random seed = " << seed << endl;
     }
     else{
-      /*PRINT*/ cerr << "  Random seed = " << "a random number (default)" << endl;
+      /*PRINT*/ cerr << "  random seed = " << "a random number (default)" << endl;
     }
     /*PRINT*/ cerr << "  # of iterations = " << ep_num << endl << endl;
 
@@ -195,7 +195,7 @@ int main(int argc, char* argv[]){
 
     if(bs_method == "fbs"){
       
-      /*PRINT*/ if(!silence) cerr << "  Method = Felsenstein's bootstrap proportion" << endl;      
+      /*PRINT*/ if(!silence) cerr << "  method = Felsenstein's bootstrap proportion" << endl;      
       
       // Random number generator (Uniform distribution->Mersenne Twister)
       function<double()> R;
@@ -221,7 +221,7 @@ int main(int argc, char* argv[]){
     }
     else{
 
-      /*PRINT*/ if(!silence) cerr << "  Method = Transfer bootstrap expectation" << endl;            
+      /*PRINT*/ if(!silence) cerr << "  method = Transfer bootstrap expectation" << endl;            
 
       int* list; 
       sc2list(nj, list, size);
