@@ -1,6 +1,6 @@
 # nj
 `nj` is a software to conduct the naiive Neighbor Joining (NJ) method (Saito and Nei, MBE, 1987) with Edge Perturbation (EP) method (Matsui and Iwasaki, xxx, xxxx).    
-`nj` is open-source software (GPL v3.0) inplemented in C++ for <strong>Linux</strong>, <strong>Mac (macOS)</strong> and <strong>Windows (Cygwin)</strong>.    
+`nj` is open-source software (GPL v3.0) implemented in C++ for <strong>Linux</strong>, <strong>Mac (macOS)</strong> and <strong>Windows (Cygwin)</strong>.    
 
 Reference: Matsui and Iwasaki, ???, 2018  
 Online tool: [GS analysis server](http://gs.bs.s.u-tokyo.ac.jp/)  
