@@ -345,24 +345,16 @@ int EP2(double* const (&oW), int* const (&list), unordered_map<string, double>& 
         num_b += list_ep[y*size+z];
       }
 
-      if(num_a1 == num_b){
-	double share = 0;
-	for(int z=0; z<size; z++){
-	  share += list[2*x*size+z]^list_ep[y*size+z];
-	}
-        min_share = (share < min_share)? share: min_share;
+      double share1 = 0;
+      double share2 = 0;
+      for(int z=0; z<size; z++){
+	share1 += list[2*x*size+z]^list_ep[y*size+z];
+	share2 += list[(2*x+1)*size+z]^list_ep[y*size+z];
       }
-      if(num_a2 == num_b){
-	double share = 0;
-	for(int z=0; z<size; z++){
-	  share += list[(2*x+1)*size+z]^list_ep[y*size+z];
-	}
-        min_share = (share < min_share)? share: min_share;
-      }
+      min_share = (share1 < min_share)? share1: min_share;
+      min_share = (share2 < min_share)? share2: min_share;
     }
 
-    min_share /= 2;
-    
     stringstream ss1;
     stringstream ss2;
     for(int z=0; z<size; z++){
