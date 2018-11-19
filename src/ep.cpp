@@ -332,8 +332,6 @@ int EP_tbe(double* const (&oW), int* const (&list_ori), unordered_map<string, do
   sc2list(nj, list_ep, size);
 
   for(int x=0; x<size-3; x++){
-    double delta = size;
-
     // calculate subset sizes
     double p = 0;
     for(int z=0; z<size; z++){
@@ -341,6 +339,7 @@ int EP_tbe(double* const (&oW), int* const (&list_ori), unordered_map<string, do
     }
     p = (p <= size - p)? p: size - p;
 
+    double delta = size;
     for(int y=0; y<size-3; y++){
       double hamming = 0;
       for(int z=0; z<size; z++){
