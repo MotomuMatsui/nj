@@ -37,8 +37,8 @@ extern void sc2list(int* const&, int*&, int const&);
 extern int NJ(double* const&, int*&, int const&);
 
 // ep.cpp
-extern int EP(double* const&, unordered_map<string, double>&, function<double()>&, int const&);
-extern int EP2(double* const&, int* const&, unordered_map<string, double>&, function<double()>&, int const&);
+extern int EP_fbs(double* const&, unordered_map<string, double>&, function<double()>&, int const&);
+extern int EP_tbe(double* const&, int* const&, unordered_map<string, double>&, function<double()>&, int const&);
 
 int main(int argc, char* argv[]){
 
@@ -146,9 +146,9 @@ int main(int argc, char* argv[]){
 
   /*/Parsing matrix file/*/
   auto same_sequence = readMAT(ifs1, W, size); 
-         // ifs1: INPUT (original matrix file)
-         // W:    OUTPUT (matrix)
-         // size: # of sequence = row size of sequence similarity matrix
+    // ifs1: INPUT (original matrix file)
+    // W:    OUTPUT (matrix)
+    // size: # of sequence = row size of sequence similarity matrix
   
   /*/Parameters/*/
   if(!silence){
@@ -157,46 +157,50 @@ int main(int argc, char* argv[]){
     /*PRINT*/ cerr << "-Input" << endl;
     /*PRINT*/ cerr << "  file = " << input << endl;
     /*PRINT*/ cerr << "  # of sequences = " << size << endl << endl;
-    
     /*PRINT*/ if(same_sequence>0) cerr << "  <WARNING> This dataset has " << same_sequence << " duplicated sequence pair(s)" << endl << endl;
-
     /*PRINT*/ cerr << "-EP method" << endl;
+
+    if(ep_num>0){
+      if(bs_method == "fbs"){
+	/*PRINT*/ cerr << "  method = Felsenstein's bootstrap proportion" << endl;      
+      }
+      else{
+	/*PRINT*/ cerr << "  method = Transfer bootstrap expectation" << endl;            
+      }
+    }
+
     if(seed>0){
       /*PRINT*/ cerr << "  random seed = " << seed << endl;
     }
     else{
       /*PRINT*/ cerr << "  random seed = " << "a random number (default)" << endl;
     }
-    /*PRINT*/ cerr << "  # of iterations = " << ep_num << endl << endl;
 
+    /*PRINT*/ cerr << "  # of iterations = " << ep_num << endl << endl;
     /*PRINT*/ cerr << "Progress:" << endl;
   }
 
   /*/NJ method/*/
   /*PRINT*/ if(!silence) cerr << "-NJ method\n" << "  executing...\r" << flush;
   NJ(W, nj, size);
-         // W: INPUT (sequence similarity matrix)
-         // nj: OUTPUT (result of stepwise neighbor joining method)
+    // W: INPUT (sequence similarity matrix)
+    // nj: OUTPUT (result of stepwise neighbor joining method)
 
   /*PRINT*/ if(!silence) cerr << "  done.         " << endl << endl;
 
   /*/Generating NJ tree Newick/*/
   sc2nwk(nj, newick, size);
-         // nj: INPUT (result of stepwise spectral clustering)
-         // newick: OUTPUT (GS tree [newick format])
+    // nj: INPUT (result of stepwise spectral clustering)
+    // newick: OUTPUT (GS tree [newick format])
 
   /*/EP method/*/
   if(ep_num>0){
-
     /*PRINT*/ if(!silence) cerr << "-EP method" << endl;
 
     string newick_EP; // GS+EP tree
     unordered_map<string, double> ep;
 
     if(bs_method == "fbs"){
-      
-      /*PRINT*/ if(!silence) cerr << "  method = Felsenstein's bootstrap proportion" << endl;      
-      
       // Random number generator (Uniform distribution->Mersenne Twister)
       function<double()> R;
       uniform_real_distribution<double> urd(0,1);    // uniform distributed random number
@@ -213,20 +217,18 @@ int main(int argc, char* argv[]){
 
       for(int n=1; n<=ep_num; n++){
 	/*PRINT*/ if(!silence) cerr << "  " << n << "/" << ep_num << " iterations" << "\r"<< flush;
-	EP(W, ep, R, size);
+
+	EP_fbs(W, ep, R, size);
           // W: INPUT (sequence similarity matrix)
           // ep: OUTPUT (result of Edge Perturbation method)
           // R: random number generator
       }      
     }
     else{
-
-      /*PRINT*/ if(!silence) cerr << "  method = Transfer bootstrap expectation" << endl;            
-
-      int* list; 
-      sc2list(nj, list, size);
+      int* list_ori; 
+      sc2list(nj, list_ori, size);
         // nj: INPUT (result of stepwise spectral clustering)
-        // list: OUTPUT (NJ tree [leaves])      
+        // list_ori: OUTPUT (NJ tree [leaves])      
       
       // Random number generator (Uniform distribution->Mersenne Twister)
       function<double()> R;
@@ -244,25 +246,23 @@ int main(int argc, char* argv[]){
 
       for(int n=1; n<=ep_num; n++){
 	/*PRINT*/ if(!silence) cerr << "  " << n << "/" << ep_num << " iterations" << "\r"<< flush;
-
-	EP2(W, list, ep, R, size);
-        // W: INPUT (sequence similarity matrix)
-        // ep: OUTPUT (result of Edge Perturbation method)
-        // R: random number generator
-
+	
+	EP_tbe(W, list_ori, ep, R, size);
+          // W: INPUT (sequence similarity matrix)
+          // ep: OUTPUT (result of Edge Perturbation method)
+          // R: random number generator
       }
-
-      delete[] list;
+      delete[] list_ori;
     }
 
     /*PRINT*/ if(!silence) cerr << "\n  done." << endl << endl;
     /*PRINT*/ if(!silence) cerr << "------------------------------------------\n" << endl;
     
     addEP(newick, newick_EP, ep, ep_num, size);
-    // newick: INPUT (GS tree [newick format])
-    // newick_EP: OUTPUT (GS+EP tree [newick format])
-    // ep: INPUT (result of Edge Perturbation method)
-    // ep_num: INPUT (# of Edge Perturbation method)
+      // newick: INPUT (GS tree [newick format])
+      // newick_EP: OUTPUT (GS+EP tree [newick format])
+      // ep: INPUT (result of Edge Perturbation method)
+      // ep_num: INPUT (# of Edge Perturbation method)
     
     /*/ GS tree WITH EP values ->STDOUT /*/
     cout << newick_EP << endl;

@@ -27,7 +27,7 @@ extern double gev(double const&, double const&);
 //format.cpp
 extern void sc2list(int* const&, int*&, int const&);
 
-int EP(double* const (&oW), unordered_map<string, double>& ep, function<double()>& R, int const& size){
+int EP_fbs(double* const (&oW), unordered_map<string, double>& ep, function<double()>& R, int const& size){
 
   // Edge perturbation
   auto N = size*size;
@@ -167,15 +167,21 @@ int EP(double* const (&oW), unordered_map<string, double>& ep, function<double()
   int* list_ep;
   sc2list(nj, list_ep, size);
 
-  stringstream ss;
-  for(int x=0; x<2*(size-3); x++){
-    ss.str("");
+  stringstream ss1;
+  stringstream ss2;
+  for(int x=0; x<size-3; x++){
+    ss1.str("");
+    ss2.str("");
     for(int z=0; z<size; z++){
       if(list_ep[x*size+z]>0){
-        ss << z+1 << "|";
+        ss1 << z+1 << "|";
+      }
+      else{
+	ss2 << z+1 << "|";
       }
     }
-    ep[ss.str()] ++;
+    ep[ss1.str()] ++;
+    ep[ss2.str()] ++;
   }
   
   delete[] W;
@@ -185,7 +191,7 @@ int EP(double* const (&oW), unordered_map<string, double>& ep, function<double()
   return 1;
 }
 
-int EP2(double* const (&oW), int* const (&list), unordered_map<string, double>& ep, function<double()>& R, int const& size){
+int EP_tbe(double* const (&oW), int* const (&list_ori), unordered_map<string, double>& ep, function<double()>& R, int const& size){
 
   // Edge perturbation
   auto N = size*size;
@@ -326,48 +332,38 @@ int EP2(double* const (&oW), int* const (&list), unordered_map<string, double>& 
   sc2list(nj, list_ep, size);
 
   for(int x=0; x<size-3; x++){
-    double min_share = size;
+    double delta = size;
 
     // calculate subset sizes
-    double num_a1 = 0;
-    double num_a2 = 0;
+    double p = 0;
     for(int z=0; z<size; z++){
-      num_a1 += list[2*x*size+z];
-      num_a2 += list[(2*x+1)*size+z];      
+      p += list_ori[x*size+z];
     }
+    p = (p <= size - p)? p: size - p;
 
-    auto num_a = (num_a1 <= num_a2)? num_a1: num_a2;
-
-    for(int y=0; y<2*(size-3); y++){
-
-      double num_b = 0;
+    for(int y=0; y<size-3; y++){
+      double hamming = 0;
       for(int z=0; z<size; z++){
-        num_b += list_ep[y*size+z];
+	hamming += list_ori[x*size+z]^list_ep[y*size+z];
       }
+      hamming = (hamming <= size - hamming)? hamming: size - hamming;
 
-      double share1 = 0;
-      double share2 = 0;
-      for(int z=0; z<size; z++){
-	share1 += list[2*x*size+z]^list_ep[y*size+z];
-	share2 += list[(2*x+1)*size+z]^list_ep[y*size+z];
-      }
-      min_share = (share1 < min_share)? share1: min_share;
-      min_share = (share2 < min_share)? share2: min_share;
+      delta = (hamming <= delta)? hamming: delta;
     }
 
     stringstream ss1;
     stringstream ss2;
     for(int z=0; z<size; z++){
-      if(list[2*x*size+z]>0){
+      if(list_ori[x*size+z]>0){
 	ss1 << z+1 << "|";	
       }
       else{
 	ss2 << z+1 << "|";	
       }
     }
-    if(min_share < num_a - 1){
-      ep[ss1.str()] += 1 - min_share / (num_a - 1);
-      ep[ss2.str()] += 1 - min_share / (num_a - 1);
+    if(delta < p - 1){
+      ep[ss1.str()] += 1 - delta / (p - 1);
+      ep[ss2.str()] += 1 - delta / (p - 1);
     }
   }
   
