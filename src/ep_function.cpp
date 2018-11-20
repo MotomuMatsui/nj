@@ -10,8 +10,7 @@
 |     http://gs.bs.s.u-tokyo.ac.jp/        |
 \******************************************/
 
-#include <algorithm>
-#include <cmath> 
+#include "ep_function.h"
 
 using namespace std;
 
@@ -27,3 +26,6 @@ double gev(double const& x, double const& mu){
     return mu +( pow(-log(x),-gamma)-1 )*theta/gamma;
   }
 }
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////

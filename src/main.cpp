@@ -10,35 +10,16 @@
 |      http://gs.bs.s.u-tokyo.ac.jp/         |
 \********************************************/
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <unistd.h>
-#include <regex>
-#include <unordered_map>
 #include <random>   
-#include <functional>
+#include <regex>
+#include <unistd.h>
+
+#include "format.h"
+#include "nj.h"
+#include "ep.h"
+#include "messages.h"
 
 using namespace std;
-
-/// messages.cpp
-extern void print_banner();
-extern void print_usage(char*&);
-
-// format.cpp
-extern int  readMAT(ifstream&, double*&, int&);
-extern void sc2nwk(int* const&, string&, int const&);
-extern void addEP(string const&, string&, unordered_map<string, double>&, int const&, int const&);
-extern void addLABEL(string const&, string&, string const&, int const&);
-extern void sc2list(int* const&, int*&, int const&);
-
-// nj.cpp (Core functions of NJ method)
-extern int NJ(double* const&, int*&, int const&);
-
-// ep.cpp
-extern int EP_fbs(double* const&, unordered_map<string, double>&, function<double()>&, int const&);
-extern int EP_tbe(double* const&, int* const&, unordered_map<string, double>&, function<double()>&, int const&);
 
 int main(int argc, char* argv[]){
 

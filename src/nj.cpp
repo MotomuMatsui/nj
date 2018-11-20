@@ -10,8 +10,7 @@
 |      http://gs.bs.s.u-tokyo.ac.jp/         |
 \********************************************/
 
-#include <iostream>
-#include <string>
+#include "nj.h"
 
 using namespace std;
 
@@ -192,3 +191,6 @@ int NJ(double* const (&oW), int* (&nj), int const& size){
   delete[] step;
   return 1;
 }
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////

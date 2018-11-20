@@ -10,22 +10,9 @@
 |      http://gs.bs.s.u-tokyo.ac.jp/         |
 \********************************************/
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
-#include <functional>
-#include <algorithm>
-#include <cmath>
+#include "ep.h"
 
 using namespace std;
-
-//ep_functions.cpp
-extern double gev(double const&, double const&);
-
-//format.cpp
-extern void sc2list(int* const&, int*&, int const&);
 
 int EP_fbs(double* const (&oW), unordered_map<string, double>& ep, function<double()>& R, int const& size){
 
@@ -190,6 +177,9 @@ int EP_fbs(double* const (&oW), unordered_map<string, double>& ep, function<doub
   delete[] list_ep;
   return 1;
 }
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
 
 int EP_tbe(double* const (&oW), int* const (&list_ori), unordered_map<string, double>& ep, function<double()>& R, int const& size){
 
@@ -373,3 +363,6 @@ int EP_tbe(double* const (&oW), int* const (&list_ori), unordered_map<string, do
   delete[] list_ep;
   return 1;
 }
+
+//////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////
