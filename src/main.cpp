@@ -14,10 +14,10 @@
 #include <regex>
 #include <unistd.h>
 
-#include "format.h"
-#include "nj.h"
 #include "ep.h"
+#include "format.h"
 #include "messages.h"
+#include "nj.h"
 
 using namespace std;
 

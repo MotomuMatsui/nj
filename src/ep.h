@@ -10,17 +10,17 @@
 |      http://gs.bs.s.u-tokyo.ac.jp/         |
 \********************************************/
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <unordered_map>
-#include <functional>
-#include <algorithm>
-#include <cmath>
-
 #ifndef EP_H
 #define EP_H
+
+#include <algorithm>
+#include <cmath>
+#include <functional>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "ep_function.h"
 #include "format.h"

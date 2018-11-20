@@ -10,13 +10,13 @@
 |      http://gs.bs.s.u-tokyo.ac.jp/         |
 \********************************************/
 
+#ifndef NJ_H
+#define NJ_H
+
 #include <iostream>
 #include <string>
 
 using namespace std;
-
-#ifndef NJ_H
-#define NJ_H
 
 int NJ(double* const (&oW), int* (&nj), int const& size);
 

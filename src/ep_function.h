@@ -10,11 +10,11 @@
 |     http://gs.bs.s.u-tokyo.ac.jp/        |
 \******************************************/
 
-#include <algorithm>
-#include <cmath> 
-
 #ifndef EP_FUNCTION_H
 #define EP_FUNCTION_H
+
+#include <algorithm>
+#include <cmath> 
 
 double gev(double const& x, double const& mu);
 

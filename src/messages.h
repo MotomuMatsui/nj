@@ -10,11 +10,11 @@
 |      http://gs.bs.s.u-tokyo.ac.jp/         |
 \********************************************/
 
-#include <iostream>
-#include <string>
-
 #ifndef MESSAGES_H
 #define MESSAGES_H
+
+#include <iostream>
+#include <string>
 
 void print_banner();
 void print_usage(char*& program);

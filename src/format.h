@@ -10,17 +10,17 @@
 |      http://gs.bs.s.u-tokyo.ac.jp/         |
 \********************************************/
 
-#include <iostream>
+#ifndef FORMAT_H
+#define FORMAT_H
+
+#include <algorithm>
 #include <fstream>
+#include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <algorithm>
-#include <iomanip>
-
-#ifndef FORMAT_H
-#define FORMAT_H
 
 using namespace std;
 
